@@ -1,5 +1,5 @@
 name: mx_player_plugin
-description: A new Flutter plugin to open video files using mx player and vlc player
+description: A new Flutter plugin to open video files using mx player with subtitle
 version: 0.0.1
 author: adar2378 <saifulislamadar@gmail.com>
 homepage: https://github.com/adar2378/mx_player_plugin
