@@ -28,15 +28,12 @@ public class MxPlayerPlugin implements MethodCallHandler {
   @TargetApi(16)
   private void openMx(String url,String subUrl){
     Parcelable[] parcels = {Uri.parse(subUrl)};
-//    String[] names = {"big bunny"};
     Intent intent = new Intent(Intent.ACTION_VIEW);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
       intent.setPackage("com.mxtech.videoplayer.ad");
     }
     intent.setData(Uri.parse(url));
-
     intent.putExtra("subs", parcels);
-//    intent.putExtra("subs.name", names);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 
@@ -48,13 +45,33 @@ public class MxPlayerPlugin implements MethodCallHandler {
     }
   }
 
+  private void openVlc(String url){
+
+    Uri uri = Uri.parse(url);
+    Intent vlcIntent = new Intent(Intent.ACTION_VIEW);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+        vlcIntent.setPackage("org.videolan.vlc");
+    }
+
+    vlcIntent.setDataAndTypeAndNormalize(uri, "video/*");
+    vlcIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    vlcIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+    try {
+      if (null != vlcIntent)
+        mRegistrar.context().startActivity(vlcIntent);
+    } catch (ActivityNotFoundException e) {
+
+    }
+  }
+
   @Override
   public void onMethodCall(MethodCall call, Result result) {
-//    if (call.method.equals("getPlatformVersion")) {
-//      result.success("Android " + android.os.Build.VERSION.RELEASE);
-//    }
+
     if(call.method.equals("openWithMxPlayer")){
       openMx(call.argument("url").toString(),call.argument("subUrl").toString());
+    }
+    else if(call.method.equals("openWithVlcPlayer")){
+      openVlc(call.argument("url").toString());
     }
     else {
       result.notImplemented();
